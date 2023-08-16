@@ -1,2 +1,24 @@
-# better-date-picker
-基于vue2，在elementui的基础上进行了DateRangePicker完善
+# better-date-range-picker
+
+## Project setup
+```
+yarn install
+```
+
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
+
+### Compiles and minifies for production
+```
+yarn build
+```
+
+### Lints and fixes files
+```
+yarn lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
