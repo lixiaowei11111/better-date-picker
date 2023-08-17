@@ -2,10 +2,9 @@
   <table
     cellspacing="0"
     cellpadding="0"
-    class="el-date-table"
+    class="el-date-table is-week-mode"
     @click="handleClick"
     @mousemove="handleMouseMove"
-    :class="{ 'is-week-mode': selectionMode === 'week' }"
   >
     <tbody>
       <tr>
@@ -17,7 +16,7 @@
       <tr
         class="el-date-table__row"
         v-for="(row, key) in rows"
-        :class="{ current: isWeekActive(row[showWeekNumber ? 2 : 1]) }"
+       :class="{ current: isWeekActive(row) }"
         :key="key"
       >
         <td v-for="(cell, key) in row" :class="getCellClasses(cell)" :key="key">
@@ -373,31 +372,8 @@ export default {
       return nextDate(this.startDate, offsetFromStart);
     },
 
-    isWeekActive(cell) {
-      if (this.selectionMode !== "week") return false;
-      const newDate = new Date(this.year, this.month, 1);
-      const year = newDate.getFullYear();
-      const month = newDate.getMonth();
-
-      if (cell.type === "prev-month") {
-        newDate.setMonth(month === 0 ? 11 : month - 1);
-        newDate.setFullYear(month === 0 ? year - 1 : year);
-      }
-
-      if (cell.type === "next-month") {
-        newDate.setMonth(month === 11 ? 0 : month + 1);
-        newDate.setFullYear(month === 11 ? year + 1 : year);
-      }
-
-      newDate.setDate(parseInt(cell.text, 10));
-
-      if (isDate(this.value)) {
-        const dayOffset =
-          ((this.value.getDay() - this.firstDayOfWeek + 7) % 7) - 1;
-        const weekDate = prevDate(this.value, dayOffset);
-        return weekDate.getTime() === newDate.getTime();
-      }
-      return false;
+    isWeekActive(row) {
+      return row.find((v) => v.start) || row.find((v) => v.end);
     },
 
     markRange(minDate, maxDate) {
@@ -518,45 +494,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-date-table.is-week-mode tr{
+.el-date-table.is-week-mode tr {
   &.el-date-table__row {
-    @mixin week () {
+    @mixin week() {
       margin-left: 2px;
       margin-right: 2px;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
 
-  &.current td.week div {
-     font-weight: bold;
-     background: #fff;
-     color: #fff;
-     span {
-       background: #409EFF;
-       border-radius: 2px;
-    }
-  }
-
-  &:hover td {
-    &.week div {
-       @include week;
+    &.current td.week div {
+      font-weight: bold;
+      background: #fff;
+      color: #fff;
+      span {
+        background: #409eff;
+        border-radius: 2px;
+      }
     }
 
-    &:nth-of-type(2) div {
-       margin-left: 5px;
-       border-top-left-radius: 15px;
-       border-bottom-left-radius: 15px;
-    }
-  }
+    &:hover td {
+      &.week div {
+        @include week;
+      }
 
-   td {
-    &.week {
-       cursor: unset;
-       div {
-         @include week;
+      &:nth-of-type(2) div {
+        margin-left: 5px;
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 15px;
+      }
+    }
+
+    td {
+      &.week {
+        cursor: unset;
+        div {
+          @include week;
+        }
       }
     }
   }
-}
 }
 </style>
